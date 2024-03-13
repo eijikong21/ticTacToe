@@ -15,12 +15,19 @@ function Gameboard(){
   
     const pickBox = (column,row, player) => {
    
-      const availableCells = board.filter((row) => row[column].getValue() === 0).map(row => row[column]);
+     // const availableCells = board.filter((row) => row[column].getValue() === 0).map(row => row[column]);
   
-      if (!availableCells.length) return;
+      //if (!availableCells.length) return;
   
       //const lowestRow = availableCells.length - 1;
+      //makes sure that token wont overide each other and turn wont be used if it ever happens
+      if((board[row][column]).getValue()!==0){
+        console.log("Please try again space is already allocated");
+        game.switchPlayerTurn();
+        return; 
+      } 
       board[row][column].addToken(player);
+      
     };
       const printBoard = () => {
         const boardWithCellValues = board.map((row) => row.map((cell) => cell.getValue()))
@@ -80,7 +87,7 @@ function Cell() {
     const playRound = (column,row) => {
     
       console.log(
-        `Dropping ${getActivePlayer().name}'s token into column ${column}...`
+        `Dropping ${getActivePlayer().name}'s token into column ${column}... row ${row}...`
       );
       board.pickBox(column,row, getActivePlayer().token);
      
@@ -93,7 +100,8 @@ function Cell() {
   
     return {
       playRound,
-      getActivePlayer
+      getActivePlayer,
+      switchPlayerTurn
     };
   }
   
