@@ -11,10 +11,9 @@ function Gameboard(){
         }
       }
     const getBoard = () => board;
-
   
     const pickBox = (column,row, player) => {
-   
+  
      // const availableCells = board.filter((row) => row[column].getValue() === 0).map(row => row[column]);
   
       //if (!availableCells.length) return;
@@ -26,14 +25,34 @@ function Gameboard(){
         game.switchPlayerTurn();
         return; 
       } 
+     
       board[row][column].addToken(player);
+      let a=game.getActivePlayer().token;
+      const winColChk = board.filter((row) => row[column].getValue() === game.getActivePlayer().token).map(row => row[column]);
       
+    //   const winRow1Chk = board[0].map(cell=>cell.getValue());
+    //   const winRow2Chk = board[1].map(cell=>cell.getValue());
+    //   const winRow3Chk = board[2].map(cell=>cell.getValue());
+    for(let i=0;i<3;i++){
+        const winRowChk=board[i].map((cell)=> cell.getValue())
+      if (JSON.stringify(winRowChk) === JSON.stringify([a, a, a])) {
+        console.log(`${game.getActivePlayer().name} Wins`);
+}
+    }
+      if (winColChk.length==3){
+        console.log(`${game.getActivePlayer().name} Wins`);
+        return;
+      }
     };
       const printBoard = () => {
         const boardWithCellValues = board.map((row) => row.map((cell) => cell.getValue()))
+       
+            
         console.log(boardWithCellValues);
+       
+       
       };
-      return { getBoard, pickBox, printBoard };
+      return { getBoard, pickBox, printBoard,};
     }
    
 
@@ -90,7 +109,7 @@ function Cell() {
         `Dropping ${getActivePlayer().name}'s token into column ${column}... row ${row}...`
       );
       board.pickBox(column,row, getActivePlayer().token);
-     
+
       switchPlayerTurn();
       printNewRound();
     };
