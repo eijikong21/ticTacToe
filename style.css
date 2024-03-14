@@ -1,0 +1,14 @@
+body,html{
+    height: 90%;
+}
+.board {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr); /* Create 3 equal columns */
+    grid-template-rows: repeat(3, 1fr);
+    grid-gap: 5px; /* Add gap between grid items */
+    height: 90%;
+  }
+  .cell{
+    font-size: 100px;
+  }
+ 
