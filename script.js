@@ -151,17 +151,22 @@ win=1;
         win=1;
       }
 }
+const winRowChk=board.getBoard().map((row)=>row.map((cell)=>cell.getValue()));
 for(let i=0;i<3;i++){
+  let temp=0;
   for(let j=0;j<3;j++){
-  const winRowChk=board.getBoard().map((row)=>row.map((cell)=>cell.getValue()));
-  console.log(winRowChk[j][i]);
-if (JSON.stringify(winRowChk[j][i]) === JSON.stringify([a])) {
+if (JSON.stringify(winRowChk[j][i]) === JSON.stringify(a)) {
+ temp=temp+1;
+}
+if(temp==3){
   playerTurnDiv.textContent = `${activePlayer.name} Wins`;
   console.log(`${game.getActivePlayer().name} Wins`);
   win=1;
 }
 }
+
 }
+
    }
    const getWin=()=>win;
     printNewRound();
