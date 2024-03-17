@@ -13,12 +13,11 @@ function Gameboard(){
     const getBoard = () => board;
      // Getter function for the win variable
     
-
-  
+    
+    
     
     const pickBox = (column,row, player) => {
-     
-    
+   
       //makes sure that token wont overide each other and turn wont be used if it ever happens
      if(board[row][column].getValue()!==0){
          console.log("Please try again space is already allocated");
@@ -27,34 +26,7 @@ function Gameboard(){
        } 
       board[row][column].addToken(player);
     
-//       let a=game.getActivePlayer().token;
-//       //vertical win condition
-//       const winColChk = board.filter((row) => row[column].getValue() === game.getActivePlayer().token).map(row => row[column]);
-//       if (winColChk.length==3){
-//         console.log(`${game.getActivePlayer().name} Wins`);
-//         win=1;
-//       }
-// // horizontal win condition
-//     for(let i=0;i<3;i++){
-      
-//         const winRowChk=board[i].map((cell)=> cell.getValue())
-//       if (JSON.stringify(winRowChk) === JSON.stringify([a,a,a])) {
-//         console.log(`${game.getActivePlayer().name} Wins`);
-//         win=1;
-// }
-//     }
-//     const chkBoard=board.map((row)=>row.map(cell=>cell.getValue()))
-//     //diagonal win condition
-//     if ((chkBoard[0][0] === a && chkBoard[1][1] === a && chkBoard[2][2] === a) || (chkBoard[0][2] === a && chkBoard[1][1] === a && chkBoard[2][0] === a)){
-//       console.log(`${game.getActivePlayer().name} Wins`);
-//       win=1;
-//       gameResult.textContent=`${game.getActivePlayer().name} Wins`;
-//     }
-//    //tie condition
-//     const hasDefaultValue = chkBoard.some(row => row.includes(0));
-//     if(hasDefaultValue==false && win==0){
-//       console.log('its a tie');
-//     }
+
     };
       const printBoard = () => {
         const boardWithCellValues = board.map((row) => row.map((cell) => cell.getValue()))
@@ -81,23 +53,27 @@ function Cell() {
     };
   }
 
-  function GameController(
-    playerOneName = "Player One",
-    playerTwoName = "Player Two"
-  ) {
+  function GameController() {
+   let p1;
+   let p2;
+   let player1=document.querySelector('#player1');
+   let player2=document.querySelector('#player2');
+   p1=player1.value;
+   p2=player2.value;
     const board = Gameboard();
-  
+
+
     const players = [
       {
-        name: playerOneName,
+        name: p1,
         token: 1
       },
       {
-        name: playerTwoName,
+        name: p2,
         token: 2
       }
     ];
-  
+    let defaultPlayer = () => activePlayer=players[0];  
     let activePlayer = players[0];
   
     const switchPlayerTurn = () => {
@@ -114,12 +90,11 @@ function Cell() {
       console.log(
         `Dropping ${getActivePlayer().name}'s token into column ${column}... row ${row}...`
       );
+   
+      console.log(p1);
       board.pickBox(column,row, getActivePlayer().token);
       endGame();
-     
-      
-     // console.log(board.getBoard());
-      //console.log(board.getBoard().map((row)=>row.map((cell)=>cell.getValue())));
+  
       switchPlayerTurn();
       printNewRound();
      
@@ -132,7 +107,7 @@ function Cell() {
     //diagonal win condition
 if ((chkBoard[0][0] === a && chkBoard[1][1] === a && chkBoard[2][2] === a) || (chkBoard[0][2] === a && chkBoard[1][1] === a && chkBoard[2][0] === a)){
   playerTurnDiv.textContent = `${activePlayer.name} Wins`;
-console.log(`${game.getActivePlayer().name} Wins`);
+console.log(`${getActivePlayer().name} Wins`);
 win=1;
 }
      //tie condition
@@ -147,10 +122,11 @@ win=1;
         const winRowChk=board.getBoard()[i].map((cell)=> cell.getValue())
       if (JSON.stringify(winRowChk) === JSON.stringify([a,a,a])) {
         playerTurnDiv.textContent = `${activePlayer.name} Wins`;
-        console.log(`${game.getActivePlayer().name} Wins`);
+        console.log(`${getActivePlayer().name} Wins`);
         win=1;
       }
 }
+//vertical win
 const winRowChk=board.getBoard().map((row)=>row.map((cell)=>cell.getValue()));
 for(let i=0;i<3;i++){
   let temp=0;
@@ -160,7 +136,7 @@ if (JSON.stringify(winRowChk[j][i]) === JSON.stringify(a)) {
 }
 if(temp==3){
   playerTurnDiv.textContent = `${activePlayer.name} Wins`;
-  console.log(`${game.getActivePlayer().name} Wins`);
+  console.log(`${getActivePlayer().name} Wins`);
   win=1;
 }
 }
@@ -168,22 +144,28 @@ if(temp==3){
 }
 
    }
-   const getWin=()=>win;
+   const newWin = (newWinState) => win=newWinState; 
+   const getWin = () => win;
+    
+  
     printNewRound();
     return {
       playRound,
       getActivePlayer,
       switchPlayerTurn,
       getWin,
-      getBoard: board.getBoard
+      newWin,
+      getBoard: board.getBoard,
+      defaultPlayer,
+      
     };
-  }
-  const game = GameController();
+  } 
+  
   function ScreenController() {
-   
+    game = GameController();
     const playerTurnDiv = document.querySelector('.turn');
     const boardDiv = document.querySelector('.board');
-    
+   
     const updateScreen = () => {
       // clear the board
       boardDiv.textContent = "";
@@ -232,8 +214,6 @@ if(temp==3){
       if(game.getWin()==1)return;
       const selectedColumn = e.target.dataset.column;
       const selectedRow = e.target.dataset.row;
-      // console.log(selectedRow);  
-      // console.log(selectedColumn);  
       // // Make sure I've clicked a column and not the gaps in between
        if (!selectedColumn || !selectedRow) return;
        
@@ -247,8 +227,45 @@ if(temp==3){
   
     // Initial render
     updateScreen();
-  
+    return updateScreen;
     // We don't need to return anything from this module because everything is encapsulated inside this screen controller.
   }
-  
-  ScreenController();
+  let game;
+  menu();
+  function menu(){
+    const containerDiv=document.querySelector('.container');
+    const start=document.querySelector('.start');
+    const createRestart = document.createElement("button");
+    createRestart.textContent='Restart';
+    createRestart.classList.add('restart');
+    start.addEventListener('click', ()=>{
+    
+      let show=ScreenController();
+      show;
+      containerDiv.removeChild(start);
+      containerDiv.appendChild(createRestart);
+      const restart=document.querySelector('.restart');
+      const inputDiv=document.querySelector('.input');
+      containerDiv.removeChild(inputDiv);
+      restart.addEventListener('click',()=>{
+      for(let i=0;i<3;i++){
+        for(let j=0;j<3;j++){
+       game.getBoard()[i][j].addToken(0);
+        }
+      }
+      
+      game.newWin(0);
+      result=document.querySelector('.result');
+      result.textContent="";
+      game.defaultPlayer(0);
+      show();
+
+        //console.log(game.getBoard().map((row) => row.map((cell) => cell.getValue())));
+        });
+      
+    });
+
+   
+  }
+
+ 

@@ -11,4 +11,15 @@ body,html{
   .cell{
     font-size: 100px;
   }
+ .container>button{
+  margin:10px;
+ }
+ .container{
  
+ }
+ .start{
+  font-size: 250px;
+  justify-content: center;
+ 
+  align-content: center;
+ }
